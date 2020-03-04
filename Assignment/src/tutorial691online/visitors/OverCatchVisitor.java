@@ -16,7 +16,7 @@ import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.Type;
 
-import tutorial691.handlers.SampleHandler;
+import tutorial691online.handlers.SampleHandler;
 
 //
 public class OverCatchVisitor extends ASTVisitor {
