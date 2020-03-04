@@ -23,6 +23,9 @@ public class ExceptionFinder {
 			for (ICompilationUnit unit : mypackage.getCompilationUnits()) {
 				// AST node
 				CompilationUnit parsedCompilationUnit = parse(unit);
+				// overcatch
+				OverCatchVisitor catVisitor = new OverCatchVisitor();
+				parsedCompilationUnit.accept(catVisitor);
 				
 				// do method visit here and check stuff
 				CatchClauseVisitor exceptionVisitor = new CatchClauseVisitor();
