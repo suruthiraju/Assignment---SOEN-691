@@ -1,13 +1,2 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy>
-    <fullyQualifiedTypeName name="tutorial691online.visitors.ThrowVisitor"/>
-    <fullyQualifiedTypeName name="tutorial691online.handlers.SampleHandler"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.ITypeBinding"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.IMethodBinding"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.ThrowStatement"/>
-    <fullyQualifiedTypeName name="tutorial691online.visitors.ThrowsClauseVisitor"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.TryStatement"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.IMethod"/>
-    <fullyQualifiedTypeName name="tutorial691online.visitors.Throw1ClauseVisitor"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.MethodInvocation"/>
-</qualifiedTypeNameHistroy>
+<qualifiedTypeNameHistroy/>

@@ -1,95 +1,147 @@
 package tutorial691online.visitors;
 
+import java.util.*;
 
-import java.awt.List;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-
-import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CatchClause;
-import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.jdt.core.dom.ClassInstanceCreation;
-import org.eclipse.jdt.core.dom.ThrowStatement;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.TryStatement;
-import org.eclipse.jdt.core.dom.Type;
 
 import tutorial691online.handlers.SampleHandler;
 
 //
 public class OverCatchVisitor extends ASTVisitor {
-	HashSet<TryStatement> tryStatement = new HashSet<>();
-	HashSet<CatchClause> catchStatement = new HashSet<>();
-	
-	
-	ArrayList<String> catchStatement2 = new ArrayList<>();
+	HashMap<String, String> overCatchStatements = new HashMap<String, String>();
+	private HashSet<CatchClause> catchStatements = new HashSet<>();
 
-	
 	@Override
-	public boolean visit(TryStatement node) {
-		
-		ArrayList<CatchClause> localExceptions = new ArrayList<>();
+	public boolean visit(CatchClause node) {
+		TryStatement tryStatement = (TryStatement) node.getParent();
+		// SampleHandler.printMessage("TryBlock:::::"+tryStatement.getBody().toString());
 
-		for (Object catchClause : node.catchClauses()) {
-			((ASTNode) catchClause).accept(new ASTVisitor() {
-				@Override
-				public boolean visit(CatchClause exceptionNode) {
+		MethodInvocationVisitor methodInvocationVisitor = new MethodInvocationVisitor("TryBlock");
+		tryStatement.accept(methodInvocationVisitor);
 
-//					
-					
-					localExceptions.add(exceptionNode);
+		// MethodInvocationVisitor catchMethodInvocationVisitor = new
+		// MethodInvocationVisitor("CatchClause");
+		// node.accept(catchMethodInvocationVisitor);
 
-					return super.visit(exceptionNode);
-				}
-			});
-
+		ASTNode parentNode = findParentMethod(tryStatement);
+		String parentMethodName = new String();
+		if (parentNode.getNodeType() == ASTNode.METHOD_DECLARATION) {
+			MethodDeclaration parentMethod = (MethodDeclaration) parentNode;
+			parentNode = parentMethod.getBody();
+			parentMethodName = getMethodNameWithoutBinding(parentMethod, true);
+			// SampleHandler.printMessage("parentMethodName:::::" + parentMethodName);
 		}
 
-		int count = 0;
-		for (int i = 0; i < localExceptions.size(); i++) {
+		SingleVariableDeclaration exceptionType = node.getException();
+		ITypeBinding catchException = exceptionType.getType().resolveBinding();
 
-			for (int j = 0; j < localExceptions.size(); j++) {
-				if (i == j) {
-					continue;
-				}
-				try {
-					String exceptionName1 = localExceptions.get(j).getException().getType().resolveBinding().getQualifiedName().toString();
-					String exceptionName2 = localExceptions.get(i).getException().getType().resolveBinding().getQualifiedName().toString();
-					Class exceptionClass1 = Class.forName(exceptionName1);
-					Class exceptionClass2 = Class.forName(exceptionName2);
+		// SampleHandler.printMessage("Catch Exception Type:::::" + catchException);
 
+		//// ITypeBinding catchExceptionType =
+		//// catchMethodInvocationVisitor.getExceptionType();
+		//// SampleHandler.printMessage("Catch Exception Type:::::" +
+		//// catchExceptionType);
 
-					boolean overCatchFound = exceptionClass1.isAssignableFrom(exceptionClass2);
-					if (overCatchFound) {
-						System.out.println("OverCatch Anti-pattern : " + exceptionClass1 + " isAssignableFrom " + exceptionClass2);
-						catchStatement2.add(exceptionClass1 + " -> " + exceptionClass2);
-						count++;
-					}
+		ITypeBinding invokedMethodException = methodInvocationVisitor.getExceptionType();
+		// SampleHandler.printMessage("Invoked Method Exception Type:::::" +
+		// invokedMethodException);
 
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
+		if (isThirdPatternException(catchException, invokedMethodException)) {
+//			overCatchStatements.put(node.getStartPosition()+"", 
+//					"catch exception type in Catch Block: " + catchException.getQualifiedName() + 
+//					", invoked method's exception type in Try Block: " + invokedMethodException.getQualifiedName() );
 
-				}
-				catch (NullPointerException e) {
-					// TODO Auto-generated catch block
-
-				}
-
-
-
-			}
-
-
+			catchStatements.add(node);
 		}
-		
+
+//		SampleHandler.printMessage("The following METHOD(" + parentMethodName
+//				+ ") suffers from the Over-Catch anti-pattern. " + "catch exception type in CATCH BLOCK is: "
+//				+ catchException.getQualifiedName() + ", invoked method's exception type in TRY BLOCK is: "
+//				+ invokedMethodException.getQualifiedName());
 
 		return super.visit(node);
 	}
 
-	public ArrayList<String> getcatchStatement() {
-		return catchStatement2;
+	public HashSet<CatchClause> getCatchBlocks() {
+		return catchStatements;
 	}
 
+	private boolean isThirdPatternException(ITypeBinding catchException, ITypeBinding invokedMethodException) {
+		if (IsSuperType(catchException, invokedMethodException)
+				|| catchException.getQualifiedName().equals(invokedMethodException.getQualifiedName())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static ASTNode findParentMethod(ASTNode node) {
+
+		int parentNodeType = node.getParent().getNodeType();
+
+		if (parentNodeType == ASTNode.METHOD_DECLARATION) {
+			return node.getParent();
+		}
+		if (parentNodeType == ASTNode.INITIALIZER) {
+			return node.getParent();
+		}
+		if (parentNodeType == ASTNode.TYPE_DECLARATION) {
+			return node.getParent();
+		}
+		if (parentNodeType == ASTNode.METHOD_DECLARATION) {
+			return node.getParent();
+		}
+
+		return findParentMethod(node.getParent());
+	}
+
+	public static String getMethodNameWithoutBinding(MethodDeclaration method, boolean quotes) {
+
+		String methodName = new String();
+
+		methodName = ((quotes) ? "\"" : "") + method.getName().toString();
+		methodName += "(";
+
+		for (Object param : method.parameters()) {
+			SingleVariableDeclaration svParam = (SingleVariableDeclaration) param;
+			methodName += svParam.getType().toString() + ",";
+		}
+		methodName += ")" + ((quotes) ? "\"" : "");
+
+		methodName = methodName.replace(",)", ")");
+
+		return methodName;
+
+	}
+
+	public HashMap<String, String> getOverCatchStatements() {
+		return overCatchStatements;
+	}
+
+	/**
+	 * Recursively find if the given subtype is a supertype of the reference type.
+	 * 
+	 * @param subtype       type to evaluate
+	 * @param referenceType initial tracing reference to detect the super type
+	 */
+	public static Boolean IsSuperType(ITypeBinding subType, ITypeBinding referenceType) {
+
+		if (subType == null || referenceType == null || referenceType.getQualifiedName().equals("java.lang.Object"))
+			return false;
+
+		if (subType.isEqualTo(referenceType.getSuperclass()))
+			return true;
+
+		return IsSuperType(subType, referenceType.getSuperclass());
+
+	}
 }
