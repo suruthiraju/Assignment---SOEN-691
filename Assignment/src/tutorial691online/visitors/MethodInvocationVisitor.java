@@ -51,20 +51,21 @@ public class MethodInvocationVisitor extends ASTVisitor{
 			this.invokedMethodNode = node;
 			IMethodBinding methodNode = node.resolveMethodBinding();
 			//SampleHandler.printMessage("Invoked Method::::::" + node.getName());
-			
-			ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
-			
-			for(ITypeBinding exception : exceptionBinding) {
-				String exceptionName = exception.getQualifiedName();
-				//Integer type = findKind(exception , node);
-				this.exceptionName = exceptionName;
-				//SampleHandler.printMessage("Throws exception::::::" + exceptionName);
-				
-				ITypeBinding exceptionType = exception.getTypeDeclaration();
-				this.exceptionTypeName = exceptionType.getQualifiedName();
-				this.exceptionType = exceptionType;
-				//SampleHandler.printMessage("Typeeeeeeeee::::::" + exceptionType);
+			if(methodNode != null) {
+				ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
+				for(ITypeBinding exception : exceptionBinding) {
+					String exceptionName = exception.getQualifiedName();
+					//Integer type = findKind(exception , node);
+					this.exceptionName = exceptionName;
+					//SampleHandler.printMessage("Throws exception::::::" + exceptionName);
+					
+					ITypeBinding exceptionType = exception.getTypeDeclaration();
+					this.exceptionTypeName = exceptionType.getQualifiedName();
+					this.exceptionType = exceptionType;
+					//SampleHandler.printMessage("Invoked Typeeeeeeeee::::::" + this.exceptionType.toString());
+				}
 			}
+
 		}
 		if(this.statementAccordingToVisitorType == "throwBlock") {
 			IMethodBinding methodNode = node.resolveMethodBinding();

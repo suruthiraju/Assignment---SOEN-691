@@ -23,7 +23,7 @@ public class OverCatchVisitor extends ASTVisitor {
 	@Override
 	public boolean visit(CatchClause node) {
 		TryStatement tryStatement = (TryStatement) node.getParent();
-		// SampleHandler.printMessage("TryBlock:::::"+tryStatement.getBody().toString());
+		// SampleHandler.printMessage("TryyyyBlock:::::"+tryStatement.getBody().toString());
 
 		MethodInvocationVisitor methodInvocationVisitor = new MethodInvocationVisitor("TryBlock");
 		tryStatement.accept(methodInvocationVisitor);
@@ -48,12 +48,11 @@ public class OverCatchVisitor extends ASTVisitor {
 
 		//// ITypeBinding catchExceptionType =
 		//// catchMethodInvocationVisitor.getExceptionType();
-		//// SampleHandler.printMessage("Catch Exception Type:::::" +
-		//// catchExceptionType);
+		// SampleHandler.printMessage("Catch Exception Type:::::" + catchException);
 
 		ITypeBinding invokedMethodException = methodInvocationVisitor.getExceptionType();
-		// SampleHandler.printMessage("Invoked Method Exception Type:::::" +
-		// invokedMethodException);
+		// SampleHandler.printMessage("Invoked Method Exception Type:::::"
+		// +invokedMethodException);
 
 		if (isThirdPatternException(catchException, invokedMethodException)) {
 //			overCatchStatements.put(node.getStartPosition()+"", 
@@ -61,6 +60,7 @@ public class OverCatchVisitor extends ASTVisitor {
 //					", invoked method's exception type in Try Block: " + invokedMethodException.getQualifiedName() );
 
 			catchStatements.add(node);
+			// SampleHandler.printMessage(catchStatements.toString());
 		}
 
 //		SampleHandler.printMessage("The following METHOD(" + parentMethodName
@@ -76,12 +76,17 @@ public class OverCatchVisitor extends ASTVisitor {
 	}
 
 	private boolean isThirdPatternException(ITypeBinding catchException, ITypeBinding invokedMethodException) {
-		if (IsSuperType(catchException, invokedMethodException)
-				|| catchException.getQualifiedName().equals(invokedMethodException.getQualifiedName())) {
-			return true;
-		} else {
+		if(invokedMethodException != null) {
+			if (IsSuperType(catchException, invokedMethodException)
+					|| catchException.getQualifiedName().equals(invokedMethodException.getQualifiedName())) {
+				return true;
+			} else {
+				return false;
+			}
+		}else {
 			return false;
 		}
+		
 	}
 
 	public static ASTNode findParentMethod(ASTNode node) {
@@ -140,8 +145,8 @@ public class OverCatchVisitor extends ASTVisitor {
 
 		if (subType.isEqualTo(referenceType.getSuperclass()))
 			return true;
-
+		
+		
 		return IsSuperType(subType, referenceType.getSuperclass());
-
 	}
 }
