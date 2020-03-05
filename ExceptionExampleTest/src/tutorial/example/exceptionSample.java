@@ -1,5 +1,6 @@
 package tutorial.example;
 
+import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -15,30 +16,32 @@ public class exceptionSample {
 		System.out.println("exception anti-pattern test example");
 	}
 	
+	
+	public void bar()   {
+
+		try{
+
+			foo();
+
+		}catch(Exception e){
+
+			e.printStackTrace();
+
+		}
+
+	}
+
+	private void foo() throws IOException{
+
+		throw new IOException();
+
+	}
+	
 	public void callException1() {
 		try {
 			throwExceptions();
 		}catch (InvalidPathException ex) {
 			// empty block
-		}
-	}
-	
-	public void callException2() {
-		try {
-			throwExceptions();
-		}catch (BufferOverflowException ex) {
-			ex.printStackTrace();
-			System.out.println("I am dummy exception");
-		}
-	}
-	
-	public void callException3() {
-		try {
-			throwExceptions();
-		}catch (BufferOverflowException ex) {
-			ex.printStackTrace();
-			System.out.println("I am dummy exception");
-			return ;
 		}
 	}
 	
@@ -66,4 +69,5 @@ public class exceptionSample {
 		}
 	}
 
+	
 }
