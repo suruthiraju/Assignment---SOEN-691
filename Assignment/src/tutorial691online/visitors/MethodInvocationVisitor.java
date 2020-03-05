@@ -42,25 +42,27 @@ public class MethodInvocationVisitor extends ASTVisitor{
 			}
 		}
 		if(this.statementAccordingToVisitorType == "TryBlock") {
-			//MethodInvocation node
 			IMethodBinding methodNode = node.resolveMethodBinding();
-			
-			ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
-			//SampleHandler.printMessage("Invoked Method Name::::::" + methodNode.getName());	
-			//numberofCheckedException=0;
-			for(ITypeBinding exception : exceptionBinding) {
-				//SampleHandler.printMessage("exception::::::" + exception.getName());
-				numberofCheckedException++;
+			if(methodNode != null) {
+				ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
+				SampleHandler.printMessage("Invoked Method Name::::::" + methodNode.getName());	
+				SampleHandler.printMessage("Number of exception::::::" + methodNode.getExceptionTypes().length);
+				for(ITypeBinding exception : exceptionBinding) {
+					SampleHandler.printMessage("exception::::::" + exception.getName());
+					numberofCheckedException++;
+				}
 			}
-			
 		}
 		if(this.statementAccordingToVisitorType == "throwBlock") {
 			IMethodBinding methodNode = node.resolveMethodBinding();
-			
-			ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();	
-			//numberofCheckedException=0;
-			for(ITypeBinding exception : exceptionBinding) {
-				numberofCheckedException++;
+			if(methodNode != null) {
+				ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
+				SampleHandler.printMessage("Invoked Method Name::::::" + methodNode.getName());	
+				SampleHandler.printMessage("Number of exception::::::" + methodNode.getExceptionTypes().length);
+				for(ITypeBinding exception : exceptionBinding) {
+					SampleHandler.printMessage("exception::::::" + exception.getName());
+					numberofCheckedException++;
+				}
 			}
 		}	
 		return super.visit(node);
