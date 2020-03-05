@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import tutorial691online.handlers.SampleHandler;
 import tutorial691online.visitors.CatchClauseVisitor;
 import tutorial691online.visitors.OverCatchVisitor;
+import tutorial691online.visitors.Throw1ClauseVisitor;
 import tutorial691online.visitors.ThrowsClauseVisitor;
 
 import org.eclipse.jdt.core.*;
@@ -39,11 +40,17 @@ public class ExceptionFinder {
 				getMethodsWithTargetCatchClauses(exceptionVisitor);
 				
 				// get Kitchen sink anti-pattern here
-				ThrowsClauseVisitor throwUncheckedException = new ThrowsClauseVisitor();
-				parsedCompilationUnit.accept(throwUncheckedException);
+//				ThrowsClauseVisitor throwUncheckedException = new ThrowsClauseVisitor();
+//				parsedCompilationUnit.accept(throwUncheckedException);
 				
 				// Give detail of detection for Kitchen sink anti-patter
-				getMethodsWithTargetThrowClauses(throwUncheckedException);
+				//getMethodsWithTargetThrowClauses(throwUncheckedException);
+				
+				// get Kitchen sink anti-pattern here
+				Throw1ClauseVisitor throwUncheckedException1 = new Throw1ClauseVisitor();
+				parsedCompilationUnit.accept(throwUncheckedException1);
+				
+				getMethodsWithTargetThrow1Clauses(throwUncheckedException1);
 			}
 		}
 	}
@@ -52,6 +59,14 @@ public class ExceptionFinder {
 		// TODO Auto-generated method stub
 		for(TryStatement tryStatements: ThrowsClauseVisitor.getTryStatements()) {
 			kitchenSinkMethods.put(findMethodForTry(tryStatements), "Throwing the Kitchen Sink");
+		}
+		
+	}
+	
+	private void getMethodsWithTargetThrow1Clauses(Throw1ClauseVisitor throwUncheckedException) {
+		// TODO Auto-generated method stub
+		for(MethodInvocation methodInvocationStatement: Throw1ClauseVisitor.getmethodInvocationStatements()) {
+			kitchenSinkMethods.put(findMethodForThrow1(methodInvocationStatement), "Throwing the Kitchen Sink");
 		}
 		
 	}
@@ -93,6 +108,20 @@ public class ExceptionFinder {
 	
 	
 	private ASTNode findParentMethodTryDeclaration(ASTNode node) {
+		// TODO Auto-generated method stub
+		if(node.getParent().getNodeType() == ASTNode.METHOD_DECLARATION) {
+			return node.getParent();
+		} else {
+			return findParentMethodDeclaration(node.getParent());
+		}
+	}
+	
+	private MethodDeclaration findMethodForThrow1(MethodInvocation methodInvoc ) {
+		return (MethodDeclaration) findParentMethodThrow1Declaration(methodInvoc);
+	}
+	
+	
+	private ASTNode findParentMethodThrow1Declaration(ASTNode node) {
 		// TODO Auto-generated method stub
 		if(node.getParent().getNodeType() == ASTNode.METHOD_DECLARATION) {
 			return node.getParent();

@@ -46,15 +46,23 @@ public class MethodInvocationVisitor extends ASTVisitor{
 			IMethodBinding methodNode = node.resolveMethodBinding();
 			
 			ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
-			SampleHandler.printMessage("Invoked Method Name::::::" + methodNode.getName());	
+			//SampleHandler.printMessage("Invoked Method Name::::::" + methodNode.getName());	
 			//numberofCheckedException=0;
 			for(ITypeBinding exception : exceptionBinding) {
-				SampleHandler.printMessage("exception::::::" + exception.getName());
+				//SampleHandler.printMessage("exception::::::" + exception.getName());
 				numberofCheckedException++;
 			}
 			
 		}
+		if(this.statementAccordingToVisitorType == "throwBlock") {
+			IMethodBinding methodNode = node.resolveMethodBinding();
 			
+			ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();	
+			//numberofCheckedException=0;
+			for(ITypeBinding exception : exceptionBinding) {
+				numberofCheckedException++;
+			}
+		}	
 		return super.visit(node);
 	}
     // To check whether an invocation is a Throw statement
