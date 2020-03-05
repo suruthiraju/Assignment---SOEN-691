@@ -1,8 +1,13 @@
 package tutorial691online.visitors;
 
 
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+
+import tutorial691online.handlers.SampleHandler;
 
 public class MethodInvocationVisitor extends ASTVisitor{
 	
@@ -13,6 +18,7 @@ public class MethodInvocationVisitor extends ASTVisitor{
 	
 	private int logPrintDefaultStatements = 0;
 	private int thrownStatements = 0;
+	private int numberofCheckedException =0;
 	private String statementAccordingToVisitorType;
 	
 	public MethodInvocationVisitor(String statement) {
@@ -25,6 +31,7 @@ public class MethodInvocationVisitor extends ASTVisitor{
 		// log statement inside catch
 		if(this.statementAccordingToVisitorType == "LogCatchSwitch"){  
 			String nodeName = node.getName().toString();
+			SampleHandler.printMessage("Invoked nodeName::::::" + nodeName);
 			if (IsLoggingStatement(nodeName) || IsDefaultStatement(nodeName) || IsPrintStatement(nodeName)) {
 				logPrintDefaultStatements += 1;
 			}
@@ -33,6 +40,19 @@ public class MethodInvocationVisitor extends ASTVisitor{
 				
 				thrownStatements += 1;
 			}
+		}
+		if(this.statementAccordingToVisitorType == "TryBlock") {
+			//MethodInvocation node
+			IMethodBinding methodNode = node.resolveMethodBinding();
+			
+			ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
+			SampleHandler.printMessage("Invoked Method Name::::::" + methodNode.getName());	
+			//numberofCheckedException=0;
+			for(ITypeBinding exception : exceptionBinding) {
+				SampleHandler.printMessage("exception::::::" + exception.getName());
+				numberofCheckedException++;
+			}
+			
 		}
 			
 		return super.visit(node);
@@ -99,5 +119,9 @@ public class MethodInvocationVisitor extends ASTVisitor{
 	
 	public int getThrownStatements() {
 		return thrownStatements;
+	}
+	
+	public int getNumberofCheckedException() {
+		return numberofCheckedException;
 	}
 }

@@ -1,6 +1,7 @@
 package tutorial691online.patterns;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.JavaModelException;
@@ -8,6 +9,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import tutorial691online.handlers.SampleHandler;
 import tutorial691online.visitors.CatchClauseVisitor;
 import tutorial691online.visitors.OverCatchVisitor;
+import tutorial691online.visitors.ThrowsClauseVisitor;
 
 import org.eclipse.jdt.core.*;
 import org.eclipse.jdt.core.dom.*;
@@ -15,6 +17,7 @@ import org.eclipse.jdt.core.dom.*;
 public class ExceptionFinder {
 	HashMap<MethodDeclaration, String> suspectMethods = new HashMap<>();
 	HashMap<MethodDeclaration, String> throwMethods = new HashMap<>();
+	HashMap<MethodDeclaration, String> kitchenSinkMethods = new HashMap<>();
 
 	public void findExceptions(IProject project) throws JavaModelException {
 		IPackageFragment[] packages = JavaCore.create(project).getPackageFragments();
@@ -30,12 +33,27 @@ public class ExceptionFinder {
 				
 				// do method visit here and check stuff
 				CatchClauseVisitor exceptionVisitor = new CatchClauseVisitor();
-				parsedCompilationUnit.accept(exceptionVisitor);
+				parsedCompilationUnit.accept(exceptionVisitor);				
 
 				// Give detail of detection
 				getMethodsWithTargetCatchClauses(exceptionVisitor);
+				
+				// get Kitchen sink anti-pattern here
+				ThrowsClauseVisitor throwUncheckedException = new ThrowsClauseVisitor();
+				parsedCompilationUnit.accept(throwUncheckedException);
+				
+				// Give detail of detection for Kitchen sink anti-patter
+				getMethodsWithTargetThrowClauses(throwUncheckedException);
 			}
 		}
+	}
+
+	private void getMethodsWithTargetThrowClauses(ThrowsClauseVisitor throwUncheckedException) {
+		// TODO Auto-generated method stub
+		for(TryStatement tryStatements: ThrowsClauseVisitor.getTryStatements()) {
+			kitchenSinkMethods.put(findMethodForTry(tryStatements), "Throwing the Kitchen Sink");
+		}
+		
 	}
 
 	private void getMethodsWithTargetCatchClauses(CatchClauseVisitor catchClauseVisitor) {
@@ -51,6 +69,7 @@ public class ExceptionFinder {
 			suspectMethods.put(findMethodForThrow(throwStatement), "throwStatement");
 			throwMethods.put(findMethodForCatch(throwStatement), "LogThrow");
 		}
+		
 	}
 
 	private ASTNode findParentMethodDeclaration(ASTNode node) {
@@ -68,7 +87,20 @@ public class ExceptionFinder {
 	private MethodDeclaration findMethodForCatch(CatchClause catchClause) {
 		return (MethodDeclaration) findParentMethodDeclaration(catchClause);
 	}
+	private MethodDeclaration findMethodForTry(TryStatement tryClause) {
+		return (MethodDeclaration) findParentMethodTryDeclaration(tryClause);
+	}
 	
+	
+	private ASTNode findParentMethodTryDeclaration(ASTNode node) {
+		// TODO Auto-generated method stub
+		if(node.getParent().getNodeType() == ASTNode.METHOD_DECLARATION) {
+			return node.getParent();
+		} else {
+			return findParentMethodDeclaration(node.getParent());
+		}
+	}
+
 	public HashMap<MethodDeclaration, String> getSuspectMethods() {
 		return suspectMethods;
 	}
@@ -79,7 +111,13 @@ public class ExceptionFinder {
 			SampleHandler.printMessage(String.format("The following method suffers from the %s anti-pattern", type));
 			SampleHandler.printMessage(declaration.toString());
 		}
+		for (MethodDeclaration declaration : kitchenSinkMethods.keySet()) {
+			String type = kitchenSinkMethods.get(declaration);
+			SampleHandler.printMessage(String.format("The following method suffers from the %s anti-pattern", type));
+			SampleHandler.printMessage(declaration.toString());
+		}
 		SampleHandler.printMessage(String.format("Throw & Log anti-pattern Detected Count: %s", throwMethods.size()));
+		SampleHandler.printMessage(String.format("Throwing the Kitchen Sink anti-pattern Detected Count: %s", kitchenSinkMethods.size()));
 	}
 
 	public static CompilationUnit parse(ICompilationUnit unit) {
