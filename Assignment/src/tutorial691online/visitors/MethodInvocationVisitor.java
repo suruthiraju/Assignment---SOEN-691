@@ -1,8 +1,13 @@
 package tutorial691online.visitors;
 
-
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+
+import tutorial691online.handlers.SampleHandler;
 
 public class MethodInvocationVisitor extends ASTVisitor{
 	
@@ -14,6 +19,10 @@ public class MethodInvocationVisitor extends ASTVisitor{
 	private int logPrintDefaultStatements = 0;
 	private int thrownStatements = 0;
 	private String statementAccordingToVisitorType;
+	private MethodInvocation invokedMethodNode;
+	private String exceptionName;
+	private ITypeBinding exceptionType;
+	private String exceptionTypeName;
 	
 	public MethodInvocationVisitor(String statement) {
 		this.statementAccordingToVisitorType = statement;
@@ -33,10 +42,68 @@ public class MethodInvocationVisitor extends ASTVisitor{
 				
 				thrownStatements += 1;
 			}
+
 		}
+		if(this.statementAccordingToVisitorType == "TryBlock") {
 			
+			this.invokedMethodNode = node;
+			IMethodBinding methodNode = node.resolveMethodBinding();
+			//SampleHandler.printMessage("Invoked Method::::::" + node.getName());
+			
+			ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
+			
+			for(ITypeBinding exception : exceptionBinding) {
+				String exceptionName = exception.getQualifiedName();
+				//Integer type = findKind(exception , node);
+				this.exceptionName = exceptionName;
+				//SampleHandler.printMessage("Throws exception::::::" + exceptionName);
+				
+				ITypeBinding exceptionType = exception.getTypeDeclaration();
+				this.exceptionTypeName = exceptionType.getQualifiedName();
+				this.exceptionType = exceptionType;
+				//SampleHandler.printMessage("Typeeeeeeeee::::::" + exceptionType);
+				
+			}
+			
+		}
+		
 		return super.visit(node);
 	}
+
+	public MethodInvocation getInvokedMethod() {
+		return invokedMethodNode;
+	}
+	
+	public String getExceptionName() {
+		return exceptionName;
+	}
+
+	public ITypeBinding getExceptionType() {
+		return exceptionType;
+	}
+	
+	public String getExceptionTypeName() {
+		return exceptionTypeName;
+	}
+	
+	public static String findParentType (ASTNode node){
+		  
+		  int parentNodeType = node.getParent().getNodeType();
+		  
+		  if(parentNodeType == ASTNode.TYPE_DECLARATION)
+		  {
+			  TypeDeclaration type = (TypeDeclaration) node.getParent();
+			  if(type.resolveBinding() != null)
+				  return type.resolveBinding().getQualifiedName();
+			  else		  
+				  return type.getName().getFullyQualifiedName();
+		  }
+		  
+		  return findParentType(node.getParent());
+	  }
+
+	
+	
     // To check whether an invocation is a Throw statement
     private static boolean IsThrownStatement(String statement)
     {
@@ -100,4 +167,6 @@ public class MethodInvocationVisitor extends ASTVisitor{
 	public int getThrownStatements() {
 		return thrownStatements;
 	}
+
+
 }

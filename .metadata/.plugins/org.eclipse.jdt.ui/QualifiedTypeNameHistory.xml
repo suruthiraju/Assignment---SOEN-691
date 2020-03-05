@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
     <fullyQualifiedTypeName name="tutorial691online.visitors.ThrowVisitor"/>
+    <fullyQualifiedTypeName name="tutorial691online.visitors.OverCatchVisitor"/>
+    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.MethodInvocation"/>
+    <fullyQualifiedTypeName name="org.eclipse.jdt.core.IType"/>
+    <fullyQualifiedTypeName name="org.eclipse.jdt.internal.core.util.ASTNodeFinder"/>
+    <fullyQualifiedTypeName name="tutorial691online.visitors.CatchVisitor"/>
+    <fullyQualifiedTypeName name="tutorial691online.visitors.CatchBlock"/>
+    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.VariableDeclarationStatement"/>
+    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.IMethodBinding"/>
+    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.ITypeBinding"/>
+    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.IBinding"/>
+    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.CatchClause"/>
 </qualifiedTypeNameHistroy>

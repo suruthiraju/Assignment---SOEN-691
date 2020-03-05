@@ -15,7 +15,8 @@ import org.eclipse.jdt.core.dom.*;
 public class ExceptionFinder {
 	HashMap<MethodDeclaration, String> suspectMethods = new HashMap<>();
 	HashMap<MethodDeclaration, String> throwMethods = new HashMap<>();
-
+	HashMap<MethodDeclaration, String> catchMethods = new HashMap<>();
+	
 	public void findExceptions(IProject project) throws JavaModelException {
 		IPackageFragment[] packages = JavaCore.create(project).getPackageFragments();
 		
@@ -24,35 +25,37 @@ public class ExceptionFinder {
 			for (ICompilationUnit unit : mypackage.getCompilationUnits()) {
 				// AST node
 				CompilationUnit parsedCompilationUnit = parse(unit);
-				// overcatch
-				OverCatchVisitor catVisitor = new OverCatchVisitor();
-				parsedCompilationUnit.accept(catVisitor);
 				
+				//Pattern 1
 				// do method visit here and check stuff
 				CatchClauseVisitor exceptionVisitor = new CatchClauseVisitor();
 				parsedCompilationUnit.accept(exceptionVisitor);
-
 				// Give detail of detection
 				getMethodsWithTargetCatchClauses(exceptionVisitor);
+				
+				//Pattern 3: overcatch
+				OverCatchVisitor overCatchVisitor = new OverCatchVisitor();
+				parsedCompilationUnit.accept(overCatchVisitor);
+				getMethodsWithTargetTryClauses(overCatchVisitor);
 			}
 		}
 	}
 
 	private void getMethodsWithTargetCatchClauses(CatchClauseVisitor catchClauseVisitor) {
-//		for(CatchClause emptyCatch: catchClauseVisitor.getEmptyCatches()) {
-//			suspectMethods.put(findMethodForCatch(emptyCatch), "EmptyCatch");
-//		}	
-//		
-//		for(CatchClause dummyCatch: catchClauseVisitor.getDummyCatches()) {
-//			suspectMethods.put(findMethodForCatch(dummyCatch), "DummyCatch");
-//		}
-		
 		for(CatchClause throwStatement: catchClauseVisitor.getThrowStatements()) {
-			suspectMethods.put(findMethodForThrow(throwStatement), "throwStatement");
-			throwMethods.put(findMethodForCatch(throwStatement), "LogThrow");
+			//suspectMethods.put(findMethodForThrow(throwStatement), "throwStatement");
+			throwMethods.put(findMethodForThrow(throwStatement), "LogThrow");
 		}
 	}
-
+	
+	
+	private void getMethodsWithTargetTryClauses(OverCatchVisitor overCatchVisitor) {
+		for(CatchClause catchblock: overCatchVisitor.getCatchBlocks()) {
+			//suspectMethods.put(findMethodForCatch(catchblock), "Over-Catch");
+			catchMethods.put(findMethodForCatch(catchblock), "Over-Catch");
+		}
+	}
+	
 	private ASTNode findParentMethodDeclaration(ASTNode node) {
 		if(node.getParent().getNodeType() == ASTNode.METHOD_DECLARATION) {
 			return node.getParent();
@@ -60,15 +63,23 @@ public class ExceptionFinder {
 			return findParentMethodDeclaration(node.getParent());
 		}
 	}
+
+	private ASTNode findParentMethodInvocation(ASTNode node) {
+		if(node.getParent().getNodeType() == ASTNode.METHOD_INVOCATION) {
+			return node.getParent();
+		} else {
+			return findParentMethodInvocation(node.getParent());
+		}
+	}
 	
 	private MethodDeclaration findMethodForThrow(CatchClause throwStatement) {
 		return (MethodDeclaration) findParentMethodDeclaration(throwStatement);
 	}
-	
-	private MethodDeclaration findMethodForCatch(CatchClause catchClause) {
-		return (MethodDeclaration) findParentMethodDeclaration(catchClause);
+
+	private MethodDeclaration findMethodForCatch(CatchClause catchStatement) {
+		return (MethodDeclaration) findParentMethodDeclaration(catchStatement);
 	}
-	
+
 	public HashMap<MethodDeclaration, String> getSuspectMethods() {
 		return suspectMethods;
 	}
@@ -79,7 +90,19 @@ public class ExceptionFinder {
 			SampleHandler.printMessage(String.format("The following method suffers from the %s anti-pattern", type));
 			SampleHandler.printMessage(declaration.toString());
 		}
+		for (MethodDeclaration declaration : throwMethods.keySet()) {
+			String type = throwMethods.get(declaration);
+			SampleHandler.printMessage(String.format("The following method suffers from the Throw & Log anti-pattern: %s", type));
+			SampleHandler.printMessage(declaration.toString());
+		}
+		for (MethodDeclaration declaration : catchMethods.keySet()) {
+			String type = catchMethods.get(declaration);
+			SampleHandler.printMessage(String.format("The following method suffers from the Over-Catch anti-pattern: %s", type));
+			SampleHandler.printMessage(declaration.toString());
+		}
+		
 		SampleHandler.printMessage(String.format("Throw & Log anti-pattern Detected Count: %s", throwMethods.size()));
+		SampleHandler.printMessage(String.format("Over-Catch anti-pattern Detected Count: %s", catchMethods.size()));
 	}
 
 	public static CompilationUnit parse(ICompilationUnit unit) {
