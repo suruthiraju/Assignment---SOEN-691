@@ -29,12 +29,10 @@ public class ExceptionFinder {
 			for (ICompilationUnit unit : mypackage.getCompilationUnits()) {
 				// AST node
 				CompilationUnit parsedCompilationUnit = parse(unit);
-<<<<<<< HEAD
+				
 				// overcatch
 				//OverCatchVisitor catVisitor = new OverCatchVisitor();
 				//parsedCompilationUnit.accept(catVisitor);
-=======
->>>>>>> 87bca94f9eefe4650bd4169bdc9db8d95795b934
 				
 				//Pattern 1
 				// do method visit here and check stuff
@@ -61,6 +59,7 @@ public class ExceptionFinder {
 				// Give detail of detection for Kitchen sink anti-patter
 				//getMethodsWithTargetThrowClauses(throwUncheckedException);
 				
+				//Pattern 2 : Kitchen Sink
 				// get Kitchen sink anti-pattern here
 				Throw1ClauseVisitor throwUncheckedException1 = new Throw1ClauseVisitor();
 				parsedCompilationUnit.accept(throwUncheckedException1);

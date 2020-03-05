@@ -47,17 +47,6 @@ public class MethodInvocationVisitor extends ASTVisitor{
 
 		}
 		if(this.statementAccordingToVisitorType == "TryBlock") {
-<<<<<<< HEAD
-			IMethodBinding methodNode = node.resolveMethodBinding();
-			if(methodNode != null) {
-				ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
-				SampleHandler.printMessage("Invoked Method Name::::::" + methodNode.getName());	
-				SampleHandler.printMessage("Number of exception::::::" + methodNode.getExceptionTypes().length);
-				for(ITypeBinding exception : exceptionBinding) {
-					SampleHandler.printMessage("exception::::::" + exception.getName());
-					numberofCheckedException++;
-				}
-=======
 			
 			this.invokedMethodNode = node;
 			IMethodBinding methodNode = node.resolveMethodBinding();
@@ -75,8 +64,6 @@ public class MethodInvocationVisitor extends ASTVisitor{
 				this.exceptionTypeName = exceptionType.getQualifiedName();
 				this.exceptionType = exceptionType;
 				//SampleHandler.printMessage("Typeeeeeeeee::::::" + exceptionType);
-				
->>>>>>> 87bca94f9eefe4650bd4169bdc9db8d95795b934
 			}
 		}
 		if(this.statementAccordingToVisitorType == "throwBlock") {
