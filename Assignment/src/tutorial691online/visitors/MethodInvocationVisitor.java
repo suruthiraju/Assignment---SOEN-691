@@ -18,6 +18,7 @@ public class MethodInvocationVisitor extends ASTVisitor{
 	
 	private int logPrintDefaultStatements = 0;
 	private int thrownStatements = 0;
+	private int numberofCheckedException =0;
 	private String statementAccordingToVisitorType;
 	private MethodInvocation invokedMethodNode;
 	private String exceptionName;
@@ -34,6 +35,7 @@ public class MethodInvocationVisitor extends ASTVisitor{
 		// log statement inside catch
 		if(this.statementAccordingToVisitorType == "LogCatchSwitch"){  
 			String nodeName = node.getName().toString();
+			SampleHandler.printMessage("Invoked nodeName::::::" + nodeName);
 			if (IsLoggingStatement(nodeName) || IsDefaultStatement(nodeName) || IsPrintStatement(nodeName)) {
 				logPrintDefaultStatements += 1;
 			}
@@ -66,7 +68,16 @@ public class MethodInvocationVisitor extends ASTVisitor{
 			}
 			
 		}
-		
+		if(this.statementAccordingToVisitorType == "throwBlock") {
+			IMethodBinding methodNode = node.resolveMethodBinding();
+			
+			ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();	
+			//numberofCheckedException=0;
+			for(ITypeBinding exception : exceptionBinding) {
+				numberofCheckedException++;
+			}
+		}	
+
 		return super.visit(node);
 	}
 
@@ -167,6 +178,8 @@ public class MethodInvocationVisitor extends ASTVisitor{
 	public int getThrownStatements() {
 		return thrownStatements;
 	}
-
-
+	
+	public int getNumberofCheckedException() {
+		return numberofCheckedException;
+	}
 }
