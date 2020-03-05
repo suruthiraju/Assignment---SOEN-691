@@ -30,6 +30,10 @@ public class ExceptionFinder {
 				// AST node
 				CompilationUnit parsedCompilationUnit = parse(unit);
 				
+				// overcatch
+				//OverCatchVisitor catVisitor = new OverCatchVisitor();
+				//parsedCompilationUnit.accept(catVisitor);
+				
 				//Pattern 1
 				// do method visit here and check stuff
 				CatchClauseVisitor exceptionVisitor = new CatchClauseVisitor();
@@ -49,12 +53,13 @@ public class ExceptionFinder {
 				getMethodsWithTargetCatchClauses(exceptionVisitor);
 				
 				// get Kitchen sink anti-pattern here
-//				ThrowsClauseVisitor throwUncheckedException = new ThrowsClauseVisitor();
-//				parsedCompilationUnit.accept(throwUncheckedException);
+				//ThrowsClauseVisitor throwUncheckedException = new ThrowsClauseVisitor();
+				//parsedCompilationUnit.accept(throwUncheckedException);
 				
 				// Give detail of detection for Kitchen sink anti-patter
 				//getMethodsWithTargetThrowClauses(throwUncheckedException);
 				
+				//Pattern 2 : Kitchen Sink
 				// get Kitchen sink anti-pattern here
 				Throw1ClauseVisitor throwUncheckedException1 = new Throw1ClauseVisitor();
 				parsedCompilationUnit.accept(throwUncheckedException1);
@@ -98,11 +103,11 @@ public class ExceptionFinder {
 	}
 	
 	private ASTNode findParentMethodDeclaration(ASTNode node) {
-		if(node.getParent().getNodeType() == ASTNode.METHOD_DECLARATION) {
-			return node.getParent();
-		} else {
-			return findParentMethodDeclaration(node.getParent());
-		}
+			if(node.getParent().getNodeType() == ASTNode.METHOD_DECLARATION) {
+				return node.getParent();
+			} else {
+				return findParentMethodDeclaration(node.getParent());
+			}
 	}
 
 	private ASTNode findParentMethodInvocation(ASTNode node) {
@@ -127,12 +132,14 @@ public class ExceptionFinder {
 	
 	
 	private ASTNode findParentMethodTryDeclaration(ASTNode node) {
-		// TODO Auto-generated method stub
-		if(node.getParent().getNodeType() == ASTNode.METHOD_DECLARATION) {
-			return node.getParent();
-		} else {
-			return findParentMethodDeclaration(node.getParent());
-		}
+		if(node != null && node.getParent() != null ) {
+			if(node.getParent().getNodeType() == ASTNode.METHOD_DECLARATION) {
+				return node.getParent();
+			} else {
+				return findParentMethodTryDeclaration(node.getParent());
+			}
+			}else
+				return null;
 	}
 	
 	private MethodDeclaration findMethodForThrow1(MethodInvocation methodInvoc ) {
@@ -142,11 +149,14 @@ public class ExceptionFinder {
 	
 	private ASTNode findParentMethodThrow1Declaration(ASTNode node) {
 		// TODO Auto-generated method stub
+		if(node != null && node.getParent() != null ) {
 		if(node.getParent().getNodeType() == ASTNode.METHOD_DECLARATION) {
 			return node.getParent();
 		} else {
-			return findParentMethodDeclaration(node.getParent());
+			return findParentMethodThrow1Declaration(node.getParent());
 		}
+		}else
+			return null;
 	}
 
 	public HashMap<MethodDeclaration, String> getSuspectMethods() {
@@ -174,7 +184,9 @@ public class ExceptionFinder {
 		for (MethodDeclaration declaration : kitchenSinkMethods.keySet()) {
 			String type = kitchenSinkMethods.get(declaration);
 			SampleHandler.printMessage(String.format("The following method suffers from the %s anti-pattern", type));
-			SampleHandler.printMessage(declaration.toString());
+			if (declaration != null) {
+				SampleHandler.printMessage(declaration.toString());
+			}			
 		}
 		
 		

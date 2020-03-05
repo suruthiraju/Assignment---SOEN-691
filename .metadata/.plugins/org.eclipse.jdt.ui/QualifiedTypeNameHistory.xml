@@ -1,27 +1,2 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy>
-    <fullyQualifiedTypeName name="tutorial691online.visitors.ThrowVisitor"/>
-<<<<<<< HEAD
-    <fullyQualifiedTypeName name="tutorial691online.visitors.OverCatchVisitor"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.MethodInvocation"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.IType"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.internal.core.util.ASTNodeFinder"/>
-    <fullyQualifiedTypeName name="tutorial691online.visitors.CatchVisitor"/>
-    <fullyQualifiedTypeName name="tutorial691online.visitors.CatchBlock"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.VariableDeclarationStatement"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.IMethodBinding"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.ITypeBinding"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.IBinding"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.CatchClause"/>
-=======
-    <fullyQualifiedTypeName name="tutorial691online.handlers.SampleHandler"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.ITypeBinding"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.IMethodBinding"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.ThrowStatement"/>
-    <fullyQualifiedTypeName name="tutorial691online.visitors.ThrowsClauseVisitor"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.TryStatement"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.IMethod"/>
-    <fullyQualifiedTypeName name="tutorial691online.visitors.Throw1ClauseVisitor"/>
-    <fullyQualifiedTypeName name="org.eclipse.jdt.core.dom.MethodInvocation"/>
->>>>>>> d185a8d71a3060a09244b62e65d5f7994f871700
-</qualifiedTypeNameHistroy>
+<qualifiedTypeNameHistroy/>

@@ -64,17 +64,18 @@ public class MethodInvocationVisitor extends ASTVisitor{
 				this.exceptionTypeName = exceptionType.getQualifiedName();
 				this.exceptionType = exceptionType;
 				//SampleHandler.printMessage("Typeeeeeeeee::::::" + exceptionType);
-				
 			}
-			
 		}
 		if(this.statementAccordingToVisitorType == "throwBlock") {
 			IMethodBinding methodNode = node.resolveMethodBinding();
-			
-			ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();	
-			//numberofCheckedException=0;
-			for(ITypeBinding exception : exceptionBinding) {
-				numberofCheckedException++;
+			if(methodNode != null) {
+				ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
+				SampleHandler.printMessage("Invoked Method Name::::::" + methodNode.getName());	
+				SampleHandler.printMessage("Number of exception::::::" + methodNode.getExceptionTypes().length);
+				for(ITypeBinding exception : exceptionBinding) {
+					SampleHandler.printMessage("exception::::::" + exception.getName());
+					numberofCheckedException++;
+				}
 			}
 		}	
 
