@@ -35,7 +35,7 @@ public class MethodInvocationVisitor extends ASTVisitor{
 		// log statement inside catch
 		if(this.statementAccordingToVisitorType == "LogCatchSwitch"){  
 			String nodeName = node.getName().toString();
-			SampleHandler.printMessage("Invoked nodeName::::::" + nodeName);
+			//SampleHandler.printMessage("Invoked nodeName::::::" + nodeName);
 			if (IsLoggingStatement(nodeName) || IsDefaultStatement(nodeName) || IsPrintStatement(nodeName)) {
 				logPrintDefaultStatements += 1;
 			}
@@ -47,7 +47,6 @@ public class MethodInvocationVisitor extends ASTVisitor{
 
 		}
 		if(this.statementAccordingToVisitorType == "TryBlock") {
-			
 			this.invokedMethodNode = node;
 			IMethodBinding methodNode = node.resolveMethodBinding();
 			//SampleHandler.printMessage("Invoked Method::::::" + node.getName());
@@ -63,6 +62,7 @@ public class MethodInvocationVisitor extends ASTVisitor{
 					this.exceptionTypeName = exceptionType.getQualifiedName();
 					this.exceptionType = exceptionType;
 					//SampleHandler.printMessage("Invoked Typeeeeeeeee::::::" + this.exceptionType.toString());
+					//SampleHandler.printMessage("testtttttttttttttttttttttttttttttt" + methodNode);
 				}
 			}
 
@@ -71,10 +71,10 @@ public class MethodInvocationVisitor extends ASTVisitor{
 			IMethodBinding methodNode = node.resolveMethodBinding();
 			if(methodNode != null) {
 				ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
-				SampleHandler.printMessage("Invoked Method Name::::::" + methodNode.getName());	
-				SampleHandler.printMessage("Number of exception::::::" + methodNode.getExceptionTypes().length);
+				//SampleHandler.printMessage("Invoked Method Name::::::" + methodNode.getName());	
+				//SampleHandler.printMessage("Number of exception::::::" + methodNode.getExceptionTypes().length);
 				for(ITypeBinding exception : exceptionBinding) {
-					SampleHandler.printMessage("exception::::::" + exception.getName());
+					//SampleHandler.printMessage("exception::::::" + exception.getName());
 					numberofCheckedException++;
 				}
 			}

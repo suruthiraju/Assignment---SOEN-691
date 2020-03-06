@@ -61,13 +61,14 @@ public class OverCatchVisitor extends ASTVisitor {
 
 			catchStatements.add(node);
 			// SampleHandler.printMessage(catchStatements.toString());
+			if(invokedMethodException != null) {
+				SampleHandler.printMessage("Over-Catch! METHOD" + parentMethodName
+						+ "->" + "Exception type in CATCH:"
+						+ catchException.getQualifiedName() + ",INVOKED METHOD's exception type in TRY:"
+						+ invokedMethodException.getQualifiedName());
+			}
 		}
-
-//		SampleHandler.printMessage("The following METHOD(" + parentMethodName
-//				+ ") suffers from the Over-Catch anti-pattern. " + "catch exception type in CATCH BLOCK is: "
-//				+ catchException.getQualifiedName() + ", invoked method's exception type in TRY BLOCK is: "
-//				+ invokedMethodException.getQualifiedName());
-
+		
 		return super.visit(node);
 	}
 
@@ -77,8 +78,7 @@ public class OverCatchVisitor extends ASTVisitor {
 
 	private boolean isThirdPatternException(ITypeBinding catchException, ITypeBinding invokedMethodException) {
 		if(invokedMethodException != null) {
-			if (IsSuperType(catchException, invokedMethodException)
-					|| catchException.getQualifiedName().equals(invokedMethodException.getQualifiedName())) {
+			if (IsSuperType(catchException, invokedMethodException)) {
 				return true;
 			} else {
 				return false;
