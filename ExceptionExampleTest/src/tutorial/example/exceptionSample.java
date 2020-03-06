@@ -37,6 +37,35 @@ public class exceptionSample {
 
 	}
 	
+	public void bar2()   {
+
+		try{
+
+			OverCatchUtil overCatchUtil = new OverCatchUtil();
+
+			overCatchUtil.foo2();
+
+		}catch(Exception e){
+
+			e.printStackTrace();
+
+		}
+
+	}
+
+
+	public class OverCatchUtil {
+
+		public OverCatchUtil() throws IOException{  //constructor
+
+		}
+
+		public void foo2() throws IOException{
+
+		}
+
+	}
+	
 	public void callException1() {
 		try {
 			throwExceptions();
