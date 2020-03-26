@@ -40,7 +40,7 @@ public class CatchClauseVisitor extends ASTVisitor{
 				logCounter++;
 			}
 			if(throwCounter>0 && logCounter>0) {
-				System.out.println(throwStatements);
+			//////System.out.println(throwStatements);
 				return true;
 			}
 		}

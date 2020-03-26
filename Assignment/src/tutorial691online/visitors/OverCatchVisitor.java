@@ -25,10 +25,6 @@ public class OverCatchVisitor extends ASTVisitor {
 		MethodInvocationVisitor methodInvocationVisitor = new MethodInvocationVisitor("TryBlock");
 		tryStatement.accept(methodInvocationVisitor);
 
-		// MethodInvocationVisitor catchMethodInvocationVisitor = new
-		// MethodInvocationVisitor("CatchClause");
-		// node.accept(catchMethodInvocationVisitor);
-
 		ASTNode parentNode = findParentMethod(tryStatement);
 		String parentMethodName = new String();
 		if (parentNode.getNodeType() == ASTNode.METHOD_DECLARATION) {
@@ -59,10 +55,10 @@ public class OverCatchVisitor extends ASTVisitor {
 			catchStatements.add(node);
 			// SampleHandler.printMessage(catchStatements.toString());
 			if(invokedMethodException != null) {
-				SampleHandler.printMessage("Over-Catch! METHOD" + parentMethodName
-						+ "->" + "Exception type in CATCH:"
-						+ catchException.getQualifiedName() + ",INVOKED METHOD's exception type in TRY:"
-						+ invokedMethodException.getQualifiedName());
+//////				SampleHandler.printMessage("Over-Catch! METHOD" + parentMethodName
+//////						+ "->" + "Exception type in CATCH:"
+//////						+ catchException.getQualifiedName() + ",INVOKED METHOD's exception type in TRY:"
+//////						+ invokedMethodException.getQualifiedName());
 			}
 		}
 		

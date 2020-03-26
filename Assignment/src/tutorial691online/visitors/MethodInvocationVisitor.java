@@ -54,7 +54,6 @@ public class MethodInvocationVisitor extends ASTVisitor{
 				ITypeBinding[] exceptionBinding = methodNode.getExceptionTypes();
 				for(ITypeBinding exception : exceptionBinding) {
 					String exceptionName = exception.getQualifiedName();
-					//Integer type = findKind(exception , node);
 					this.exceptionName = exceptionName;
 					//SampleHandler.printMessage("Throws exception::::::" + exceptionName);
 					

@@ -25,7 +25,7 @@ public class ThrowsClauseVisitor extends ASTVisitor  {
 		if(methodInvocationVisitor.getNumberofCheckedException() > 1) {
 			tryStatements.add(node);
 		}
-
+		
 		return super.visit(node);
 	}
 	public static HashSet<TryStatement> getTryStatements() {
